@@ -10,6 +10,7 @@ except Exception as e:
     my_sock.close()
     exit(f"server is down - try again {str(e)}")
 
+
 while True:
     msg = input("enter msg to send or exit to finish ")
     if msg.lower() == "exit":

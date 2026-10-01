@@ -31,6 +31,7 @@ while True:
                 client_sock.send(server_name.encode())
 
 
+
         except Exception as e:
             print(f"error in recv/send {str(e)}")
             break
