@@ -1,9 +1,13 @@
 import socket
+import datetime
+import random
 
 #create the server
 server_sock = socket.socket()
 server_sock.bind(("0.0.0.0", 1450))
 server_sock.listen(3)
+func_tuple = ("time", "name", "rand")
+server_name = "Harel's server"
 
 while True:
     #wait to clients
@@ -12,11 +16,19 @@ while True:
     # handle the client
     while True:
         try:
-            data = client_sock.recv(1024).decode()
-            if data == "":
+            data = client_sock.recv(4).decode()
+            if data not in func_tuple:
                 break
             print(f"getting data - {data}")
-            client_sock.send(data.encode())
+            #client_sock.send(data.encode())
+            if data.lower() == "time":
+                time = datetime.datetime.now()
+                client_sock.send(str(time).encode())
+            if data.lower() == "rand":
+                number = random.randint(1,11)
+                client_sock.send(str(number).encode())
+            if data.lower() == "name":
+                client_sock.send(server_name.encode())
 
 
         except Exception as e:
