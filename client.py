@@ -5,7 +5,7 @@ my_sock = socket.socket()
 func_tuple = ("time", "name", "rand")
 
 try:
-    my_sock.connect(("127.0.0.1", 1450))
+    my_sock.connect(("127.0.0.1", 1451))
 except Exception as e:
     my_sock.close()
     exit(f"server is down - try again {str(e)}")

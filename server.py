@@ -1,10 +1,11 @@
+#git link - https://github.com/harelnutman-collab/server_client
 import socket
 import datetime
 import random
 
 #create the server
 server_sock = socket.socket()
-server_sock.bind(("0.0.0.0", 1450))
+server_sock.bind(("0.0.0.0", 1451))
 server_sock.listen(3)
 func_tuple = ("time", "name", "rand")
 server_name = "Harel's server"
