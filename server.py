@@ -16,26 +16,24 @@ while True:
     print(f"{addr[0]} - connected")
     # handle the client
     while True:
-        try:
+
             data = client_sock.recv(4).decode()
             if data not in func_tuple:
                 break
             print(f"getting data - {data}")
             #client_sock.send(data.encode())
             if data.lower() == "time":
-                time = datetime.datetime.now()
-                client_sock.send(str(time).encode())
-            if data.lower() == "rand":
-                number = random.randint(1,11)
-                client_sock.send(str(number).encode())
-            if data.lower() == "name":
-                client_sock.send(server_name.encode())
+                answer = datetime.datetime.now()
+            elif data.lower() == "rand":
+                answer = random.randint(1,11)
+            elif data.lower() == "name":
+                answer = server_name
 
-
-
-        except Exception as e:
-            print(f"error in recv/send {str(e)}")
-            break
+            try:
+                client_sock.send(str(answer).encode())
+            except Exception as e:
+                print(f"error in recv/send {str(e)}")
+                break
 
     print(f"{addr[0]} - disconnected")
     client_sock.close()
