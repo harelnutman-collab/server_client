@@ -1,11 +1,11 @@
 import socket
 from PIL import ImageGrab
-
+import subprocess
 
 server_sock = socket.socket()
-server_sock.bind(("0.0.0.0", 1455))
+server_sock.bind(("0.0.0.0", 1452))
 server_sock.listen(3)
-func_tuple = ("screenshot",)
+func_tuple = ("screenshot", "open process")
 
 while True:
     #wait to clients
@@ -39,6 +39,12 @@ while True:
                 except Exception as e:
                     print("")
 
+            if data == "open process":
+                try:
+                    print("f")
+                    subprocess.call(data)
+                except Exception as e:
+                    print(f"error in recv/send try again {str(e)}")
 
         except Exception as e:
             print(f"error in recv/send try again {str(e)}")

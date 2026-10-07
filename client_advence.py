@@ -3,6 +3,8 @@ from PIL import Image
 import os
 
 
+
+
 def recv_image_data(client_socket, file_name, file_data_len):
     """
     receive the image data and save the image
@@ -26,11 +28,12 @@ def recv_image_data(client_socket, file_name, file_data_len):
         f.write(data)
 
 
+func_tuple_client = ("screenshot", "open process")
 my_sock = socket.socket()
 
 
 try:
-    my_sock.connect(("127.0.0.1", 1455))
+    my_sock.connect(("127.0.0.1", 1452  ))
 
 except Exception as e:
     my_sock.close()
@@ -43,9 +46,10 @@ while True:
     if msg.lower() == "exit":
         break
 
+    elif msg.lower() not in func_tuple_client:
+        print("not valid input")
 
-
-    if msg.lower() == "screenshot":
+    elif msg.lower() == "screenshot":
         try:
             my_sock.send(msg.encode())
 
@@ -57,11 +61,16 @@ while True:
             im = Image.open("screenshot.jpg")
             im.show()
 
-
-
         except Exception as e:
             print(f"error in receive or sending data {str(e)}")
 
+    elif msg.lower() == "open process":
+        try:
+            msg = input("enter the name of the process")
+            my_sock.send(msg.encode())
+
+        except Exception as e:
+            print(f"error in receive or sending data {str(e)}")
 
 my_sock.close()
 print("bye bye")
