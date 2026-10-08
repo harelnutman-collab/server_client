@@ -5,7 +5,18 @@ import subprocess
 server_sock = socket.socket()
 server_sock.bind(("0.0.0.0", 1452))
 server_sock.listen(3)
-func_tuple = ("screenshot", "open process")
+
+
+def send_data(client, data_len_byte, data):
+    if tyep(data) == str:
+        data = data.encode()
+    try:
+      client.send(str(len(data)).zfill(data_len_byte).encode())
+      client.send(data)
+    except Exception as e:
+        print(f"error in recv/send try again {str(e)}")
+
+
 
 while True:
     #wait to clients
@@ -16,35 +27,32 @@ while True:
     # handle the client
     while True:
         try:
-            data = client_sock.recv(20).decode()
-            if data.lower() not in func_tuple:
+            data = client_sock.recv(1).decode()
+            if data not in ['1','2']:
                 break
             print(f"getting data - {data}")
 
-            if data.lower() == "screenshot":
+            if data == "1":
                 im = ImageGrab.grab()
                 im.save('screenshot.jpg')
                 with open('screenshot.jpg', 'rb') as file:
                     image_data = file.read()
-                file_data_len = str(len(image_data)).zfill(6)
-                file_name = "screenshot.jpg"
-                file_name_len = str(len(image_data)).zfill(2)
 
+                send_data(client_sock, 6, image_data)
+
+
+            if data == "2":
                 try:
-                    client_sock.send(file_name_len)
-                    client_sock.send(file_name)
-                    client_sock.send(file_data_len)
-                    client_sock.sendall(image_data)
-
-                except Exception as e:
-                    print("")
-
-            if data == "open process":
-                try:
+                    app_len = int(client_sock.recv(2).decode())
+                    app_name = client_sock.recv(app_len).decode()
                     print("f")
                     subprocess.call(data)
                 except Exception as e:
                     print(f"error in recv/send try again {str(e)}")
 
+
+
         except Exception as e:
             print(f"error in recv/send try again {str(e)}")
+    print(f"{addr[0]} - disconnected")
+    client_sock.close()
