@@ -8,7 +8,7 @@ server_sock.listen(3)
 
 
 def send_data(client, data_len_byte, data):
-    if tyep(data) == str:
+    if type(data) == str:
         data = data.encode()
     try:
       client.send(str(len(data)).zfill(data_len_byte).encode())
@@ -45,11 +45,9 @@ while True:
                 try:
                     app_len = int(client_sock.recv(2).decode())
                     app_name = client_sock.recv(app_len).decode()
-                    print("f")
-                    subprocess.call(data)
                 except Exception as e:
                     print(f"error in recv/send try again {str(e)}")
-
+                subprocess.call(app_name)
 
 
         except Exception as e:

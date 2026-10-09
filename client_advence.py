@@ -4,7 +4,7 @@ import os
 
 
 def send_data(client, data_len_byte, data):
-    if tyep(data) == str:
+    if type(data) == str:
         data = data.encode()
     try:
       client.send(str(len(data)).zfill(data_len_byte).encode())
@@ -47,14 +47,14 @@ except Exception as e:
     my_sock.close()
     exit(f"server is down - try again {str(e)}")
 
-menu = "choose:\n 1 = screenshott\n 2 = copy\n 9 - exit\n enter your choice: "
+menu = "choose:\n 1 = screenshot\n 2 = open process\n 9 - exit\n enter your choice: "
 
 while True:
     msg = input(menu)
     if msg == '9':
         break
 
-    elif msg.lower() not in ['1', '2']:
+    elif msg not in ['1', '2']:
         print("not valid input")
         continue
 
@@ -64,7 +64,7 @@ while True:
         except Exception as e:
             print(f"error in receive or sending data {str(e)}")
 
-        if msg == "1": # screen shoot
+        if msg == "1": # screenshot
             try:
                 file_data_len = int(my_sock.recv(6).decode())
                 recv_image_data(my_sock, file_data_len)
@@ -74,8 +74,8 @@ while True:
 
 
 
-        elif msg.lower() == "2":
-            msg = input("enter the name of the process")
+        elif msg == "2":
+            msg = input("enter the name of the process ")
             send_data(my_sock, 2, msg)
 
 my_sock.close()
