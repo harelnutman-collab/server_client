@@ -36,48 +36,68 @@ def recv_image_data(client_socket, file_data_len):
     im = Image.open("screenshot.jpg")
     im.show()
 
-func_tuple_client = ("screenshot", "open process")
+options = ['1', '2', '3', '4']
 my_sock = socket.socket()
 
 
 try:
-    my_sock.connect(("127.0.0.1", 1452  ))
+    my_sock.connect(("127.0.0.1", 1452 ))
 
 except Exception as e:
     my_sock.close()
-    exit(f"server is down - try again {str(e)}")
+    exit(f"server is down - try again {str(e)}" )
 
-menu = "choose:\n 1 = screenshot\n 2 = open process\n 9 - exit\n enter your choice: "
+menu = "choose:\n 1 = screenshot\n 2 = open process\n 3 = copy\n 4 = paste\n 9 - exit\n enter your choice: "
 
 while True:
     msg = input(menu)
     if msg == '9':
         break
 
-    elif msg not in ['1', '2']:
-        print("not valid input")
+    elif msg not in options:
+        print("not valid input ")
         continue
 
     else:
         try:
             my_sock.send(msg.encode())
         except Exception as e:
-            print(f"error in receive or sending data {str(e)}")
+            print(f"error in receive or sending data {str(e)} ")
 
         if msg == "1": # screenshot
             try:
                 file_data_len = int(my_sock.recv(6).decode())
                 recv_image_data(my_sock, file_data_len)
             except Exception as e:
-                print(f"error in receive or sending data {str(e)}")
+                print(f"error in receive or sending data {str(e)} ")
                 break
 
 
 
         elif msg == "2":
             msg = input("enter the name of the process ")
-            send_data(my_sock, 2, msg)
+            try:
+                send_data(my_sock, 2, msg)
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
 
+        elif msg == "3":
+            msg = input("enter text to copy: ")
+            try:
+                send_data(my_sock, 3, msg)
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
+
+        elif msg == "4":
+            try:
+                paste_text_len = int(my_sock.recv(3).decode())
+                text = my_sock.recv(paste_text_len).decode()
+                print(str(text))
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
 my_sock.close()
 print("bye bye")
 
