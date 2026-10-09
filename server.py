@@ -5,9 +5,8 @@ import random
 
 #create the server
 server_sock = socket.socket()
-server_sock.bind(("0.0.0.0", 1451))
+server_sock.bind(("0.0.0.0", 1450))
 server_sock.listen(3)
-func_tuple = ("time", "name", "rand")
 server_name = "Harel's server"
 
 while True:
@@ -16,20 +15,24 @@ while True:
     print(f"{addr[0]} - connected")
     # handle the client
     while True:
-
-            data = client_sock.recv(4).decode()
-            if data not in func_tuple:
+            try:
+                data = client_sock.recv(4).decode()
+            except Exception as e:
+                print(f"error in recv/send {str(e)}")
                 break
+
             print(f"getting data - {data}")
             #client_sock.send(data.encode())
             if data.lower() == "time":
-                answer = datetime.datetime.now()
+                answer = str(datetime.datetime.now())
             elif data.lower() == "rand":
-                answer = random.randint(1,11)
+                answer = str(random.randint(1,11))
             elif data.lower() == "name":
                 answer = server_name
-
+            else:
+                break
             try:
+                client_sock.send(str(len(answer)).zfill(2).encode())
                 client_sock.send(str(answer).encode())
             except Exception as e:
                 print(f"error in recv/send {str(e)}")
