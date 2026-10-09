@@ -12,6 +12,7 @@ except Exception as e:
     exit(f"server is down - try again {str(e)}")
 
 
+
 while True:
     msg = input("enter msg to send or exit to finish ")
     if msg.lower() == "exit":

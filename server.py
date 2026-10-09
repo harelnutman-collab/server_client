@@ -21,6 +21,7 @@ while True:
                 print(f"error in recv/send {str(e)}")
                 break
 
+
             print(f"getting data - {data}")
             #client_sock.send(data.encode())
             if data.lower() == "time":
