@@ -36,7 +36,7 @@ def recv_image_data(client_socket, file_data_len):
     im = Image.open("screenshot.jpg")
     im.show()
 
-options = ['1', '2', '3', '4', '5']
+options = ['1', '2', '3', '4', '5', '6', '7']
 my_sock = socket.socket()
 
 
@@ -47,7 +47,7 @@ except Exception as e:
     my_sock.close()
     exit(f"server is down - try again {str(e)}" )
 
-menu = "choose:\n 1 = screenshot\n 2 = open process\n 3 = copy\n 4 = paste\n 5 = delete file\n 9 - exit\n enter your choice: "
+menu = "choose:\n 1 = screenshot\n 2 = open process\n 3 = copy\n 4 = paste\n 5 = delete file\n 6 = open folder\n 7 = copy folders\n 9 = exit\n enter your choice: "
 
 while True:
     msg = input(menu)
@@ -78,9 +78,12 @@ while True:
             msg = input("enter the name of the process ")
             try:
                 send_data(my_sock, 2, msg)
+                run_len = int(my_sock.recv(1).decode())
+                run = str(my_sock.recv(run_len).decode())
             except Exception as e:
                 print(f"error in receive or sending data {str(e)} ")
                 break
+            print(run)
 
         elif msg == "3":
             text_to_copy = input("enter text to copy: ")
@@ -94,10 +97,10 @@ while True:
             try:
                 paste_text_len = int(my_sock.recv(3).decode())
                 text = my_sock.recv(paste_text_len).decode()
-                print(str(text))
             except Exception as e:
                 print(f"error in receive or sending data {str(e)} ")
                 break
+            print(str(text))
 
         elif msg == "5":
             file_name = input("enter the name of the file to delete ")
@@ -105,11 +108,34 @@ while True:
                 send_data(my_sock, 2, file_name)
                 len_return = int(my_sock.recv(1).decode())
                 data_from_server = str(my_sock.recv(len_return).decode())
-                print(data_from_server)
             except Exception as e:
                 print(f"error in receive or sending data {str(e)} ")
                 break
+            print(data_from_server)
 
+        elif msg == "6":
+            folder_name = input("enter the name of the folder to show ")
+            try:
+                send_data(my_sock, 2, folder_name)
+                len_flies_list = int(my_sock.recv(4).decode())
+                files_list = str(my_sock.recv(len_flies_list).decode())
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
+            print(files_list)
+
+        elif msg == "7" :
+            file_one = input("enter file to copy ")
+            file_two = input("enter file to paste ")
+            try:
+                send_data(my_sock, 2, file_one)
+                send_data(my_sock, 2, file_two)
+                len_complete = int(my_sock.recv(1).decode())
+                complete_from_server = str(my_sock.recv(len_complete).decode())
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
+            print(complete_from_server)
 my_sock.close()
 print("bye bye")
 
