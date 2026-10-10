@@ -1,8 +1,9 @@
+import os.path
 import socket
 from PIL import ImageGrab
 import subprocess
 import pyperclip
-
+import shutil
 
 server_sock = socket.socket()
 server_sock.bind(("0.0.0.0", 1452))
@@ -19,7 +20,7 @@ def send_data(client, data_len_byte, data):
         print(f"error in recv/send try again {str(e)}")
 
 
-options_server = ['1', '2', '3', '4']
+options_server = ['1', '2', '3', '4', '5']
 
 while True:
     #wait to clients
@@ -54,6 +55,7 @@ while True:
                 print(f"getting data - {str(app_name)}")
                 subprocess.call(app_name)
 
+
             if data == "3":
                 try:
                     text_to_copy_len = int(client_sock.recv(3).decode())
@@ -70,6 +72,19 @@ while True:
                 print(paste_text)
                 try:
                     send_data(client_sock, 3, paste_text)
+                except Exception as e:
+                    print(f"error in recv/send try again {str(e)}")
+                    continue
+
+            if data == "5":
+                try:
+                    file_name_len = int(client_sock.recv(2).decode())
+                    file_path = str(client_sock.recv(file_name_len).decode())
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        send_data(client_sock, 1, '0')
+                    else:
+                        send_data(client_sock, 1, '1')
                 except Exception as e:
                     print(f"error in recv/send try again {str(e)}")
                     continue

@@ -36,7 +36,7 @@ def recv_image_data(client_socket, file_data_len):
     im = Image.open("screenshot.jpg")
     im.show()
 
-options = ['1', '2', '3', '4']
+options = ['1', '2', '3', '4', '5']
 my_sock = socket.socket()
 
 
@@ -47,7 +47,7 @@ except Exception as e:
     my_sock.close()
     exit(f"server is down - try again {str(e)}" )
 
-menu = "choose:\n 1 = screenshot\n 2 = open process\n 3 = copy\n 4 = paste\n 9 - exit\n enter your choice: "
+menu = "choose:\n 1 = screenshot\n 2 = open process\n 3 = copy\n 4 = paste\n 5 = delete file\n 9 - exit\n enter your choice: "
 
 while True:
     msg = input(menu)
@@ -83,9 +83,9 @@ while True:
                 break
 
         elif msg == "3":
-            msg = input("enter text to copy: ")
+            text_to_copy = input("enter text to copy: ")
             try:
-                send_data(my_sock, 3, msg)
+                send_data(my_sock, 3, text_to_copy)
             except Exception as e:
                 print(f"error in receive or sending data {str(e)} ")
                 break
@@ -98,6 +98,18 @@ while True:
             except Exception as e:
                 print(f"error in receive or sending data {str(e)} ")
                 break
+
+        elif msg == "5":
+            file_name = input("enter the name of the file to delete ")
+            try:
+                send_data(my_sock, 2, file_name)
+                len_return = int(my_sock.recv(1).decode())
+                data_from_server = str(my_sock.recv(len_return).decode())
+                print(data_from_server)
+            except Exception as e:
+                print(f"error in receive or sending data {str(e)} ")
+                break
+
 my_sock.close()
 print("bye bye")
 
